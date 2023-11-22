@@ -1,0 +1,20 @@
+<div th:fragment="table">
+  <table class="table table-bordered">
+    <tr>
+      <td>№</td>
+      <td>Бренд</td>
+      <td>Диоптрии</td>
+      <td>Цвет оправы</td>
+      <td>Цвет линз</td>
+      <td>Длина дужек</td>
+    </tr>
+    <tr th:each="glasses : ${glassesList}">
+      <td th:text="${glasses.getId()}"></td>
+      <td th:text="${glasses.getBrand()}"></td>
+      <td th:text="${glasses.getDiopters()}"></td>
+      <td th:text="${glasses.getFrameColor()}"></td>
+      <td th:text="${glasses.getLensColor()}"></td>
+      <td th:text="${glasses.getLengthArches()}"></td>
+    </tr>
+  </table>
+</div>

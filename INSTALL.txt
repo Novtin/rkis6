@@ -1,0 +1,43 @@
+Для развёртывания БД в консоли psql:
+Создайте новую базу данных и пользователя в консоли psql под своими данными:
+CREATE DATABASE rkis;
+CREATE USER postgres WITH PASSWORD 'postgres';
+\q
+psql -h localhost -p 5432 -d rkis -U postgres -W
+Введите пароль: postgres
+\c rkis;
+CREATE TABLE glasses (
+	id SERIAL PRIMARY KEY,
+	diopters DOUBLE PRECISION NOT NULL,
+    lengthArches DOUBLE PRECISION NOT NULL,
+   	lensColor TEXT NOT NULL,
+    frameColor TEXT NOT NULL,
+    brand TEXT NOT NULL
+);
+
+CREATE TABLE client (
+ 	id_user SERIAL PRIMARY KEY,
+	login VARCHAR(25) NOT NULL UNIQUE,
+	password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE role (
+	id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+INSERT INTO role(name) VALUES ('ROLE_USER'), ('ROLE_ADMIN');
+
+CREATE TABLE gamer_roles (
+            user_id int NOT NULL,
+            role_id int NOT NULL,
+            CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gamer (id_user),
+            CONSTRAINT role_fk FOREIGN KEY (role_id) REFERENCES role (id),
+            PRIMARY KEY (user_id, role_id)
+);
+
+
+Для компиляции и запуска проекта нужно ввести в терминале, находясь в корневой папке:
+mvn clean package
+java -jar target/rkis6-1.0-SNAPSHOT.jar
+Открыть в бразуере localhost:8081
+Чтобы зарегистрировать админа, введите логин в регистрации admin
