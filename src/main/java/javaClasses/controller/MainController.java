@@ -4,31 +4,35 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import javaClasses.entity.Glasses;
+import javaClasses.entity.User;
 import javaClasses.repository.GlassesRepository;
+import javaClasses.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
 public class MainController {
     private final GlassesRepository glassesRepository;
+    private final UserService userService;
 
     @Autowired
-    public MainController(GlassesRepository glassesRepository) {
+    public MainController(GlassesRepository glassesRepository, UserService userService) {
         this.glassesRepository = glassesRepository;
+        this.userService = userService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/menu")
     public String showMenu(Authentication authentication, Model model) {
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             String role = authority.getAuthority();
@@ -39,7 +43,7 @@ public class MainController {
                 model.addAttribute("role", role);
             }
         }
-        return "index";
+        return "menu";
     }
 
     @GetMapping("/table")
@@ -62,7 +66,7 @@ public class MainController {
             return "save";
         }
         glassesRepository.save(glasses);
-        return "redirect:/";
+        return "redirect:/menu";
     }
 
     @GetMapping("/delete")
@@ -89,7 +93,7 @@ public class MainController {
             model.addAttribute("func", Arrays.asList("delete", "удаления"));
             return "inputId";
         }
-        return "redirect:/";
+        return "redirect:/menu";
     }
 
     @GetMapping("/find")
@@ -155,7 +159,57 @@ public class MainController {
             return "edit";
         }
         glassesRepository.save(glasses);
-        return "redirect:/";
+        return "redirect:/menu";
+    }
+
+    @GetMapping("/profile")
+    public String profileGet(Model model, Principal principal){
+        String username = principal.getName();
+        User user = userService.findUserByLogin(username);
+        model.addAttribute("user", user);
+        return "profile";
+    }
+
+    @GetMapping("/login")
+    public String loginGet(Model model){
+        model.addAttribute("user", new User());
+        return "login";
+    }
+
+
+    @PostMapping("/login")
+    public String loginPost(@ModelAttribute("user") @Validated User user,
+                            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "login";
+        }
+        if (!userService.loginUser(user.getLogin(), user.getPassword())){
+            return "/login";
+        }
+
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/registration")
+    public String registrationGet(Model model){
+        model.addAttribute("user", new User());
+        return "registration";
+    }
+
+    @PostMapping("/registration")
+    public String registrationPost(@ModelAttribute("user") @Validated User user,
+                                   BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+        if (!userService.saveUser(user)){
+            model.addAttribute("errorMessage",
+                    "Пользователь с таким логином уже существует");
+            return "registration";
+        }
+        return "redirect:/login";
     }
 
 }

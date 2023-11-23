@@ -10,7 +10,7 @@
     <link href="../static/css/style.css" type="text/css" rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<th:block th:insert="~{blocks/errorBlock :: error}"></th:block>
+<th:block th:insert="~{/blocks/errorBlock :: error}"></th:block>
 <form th:action="@{/save}" method="post" th:object="${glasses}">
     <table>
         <tr>
@@ -69,6 +69,6 @@
         </tr>
     </table>
 </form>
-<th:block th:insert="~{blocks/footerBlock :: footer}"></th:block>
+<th:block th:insert="~{/blocks/footerBlock :: footer}"></th:block>
 </body>
 </html>

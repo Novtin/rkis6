@@ -1,12 +1,10 @@
 package javaClasses.service;
 
-import jakarta.annotation.PostConstruct;
 import javaClasses.entity.Role;
 import javaClasses.entity.User;
 import javaClasses.repository.RoleRepository;
 import javaClasses.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

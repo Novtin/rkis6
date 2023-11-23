@@ -18,6 +18,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 
@@ -26,9 +27,6 @@ import java.util.Objects;
 
 @Configuration
 public class SpringConfig implements WebMvcConfigurer {
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS =
-            new String[]{"classpath:/resources/", "classpath:/static/", "classpath:/templates/"};
-
     private final Environment env;
 
     @Autowired
@@ -64,14 +62,12 @@ public class SpringConfig implements WebMvcConfigurer {
         return txManager;
     }
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setEnableSpringELCompiler(true);
-        templateEngine.setTemplateResolver(thymeleafTemplateResolver());
+        templateEngine.addTemplateResolver(firstTemplateResolver());
+        templateEngine.addTemplateResolver(secondTemplateResolver());
         return templateEngine;
     }
 
@@ -83,30 +79,37 @@ public class SpringConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ISpringTemplateEngine thymeleafTemplateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setEnableSpringELCompiler(true);
-        templateEngine.setTemplateResolver(thymeleafTemplateResolver());
-        return templateEngine;
+    public SpringResourceTemplateResolver firstTemplateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setPrefix("classpath:/templates");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setOrder(0);
+        templateResolver.setCheckExistence(true);
+
+        return templateResolver;
     }
 
-    private ITemplateResolver thymeleafTemplateResolver() {
-        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setApplicationContext(applicationContext);
-        resolver.setPrefix("classpath:/templates/");
-        resolver.setSuffix(".html");
-        resolver.setTemplateMode(TemplateMode.HTML);
-        resolver.setCharacterEncoding("UTF-8");
-        return resolver;
+    @Bean
+    public ClassLoaderTemplateResolver secondTemplateResolver() {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setPrefix("classpath:/templates/blocks");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setOrder(1);
+        templateResolver.setCheckExistence(true);
+
+        return templateResolver;
     }
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(thymeleafTemplateEngine());
+        resolver.setTemplateEngine(templateEngine());
         registry.viewResolver(resolver);
     }
-
 }
 
 

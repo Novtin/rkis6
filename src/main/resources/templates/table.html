@@ -12,12 +12,12 @@
 <body>
 <div th:switch="${!glassesList.isEmpty()}">
     <div th:case="${true}">
-        <th:block th:insert="~{blocks/tableBlock :: table}"></th:block>
+        <th:block th:insert="~{/blocks/tableBlock :: table}"></th:block>
     </div>
     <div th:case="${false}">
         <h2>Записей нет</h2>
     </div>
 </div>
-<th:block th:insert="~{blocks/footerBlock :: footer}"></th:block>
+<th:block th:insert="~{/blocks/footerBlock :: footer}"></th:block>
 </body>
 </html>

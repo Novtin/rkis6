@@ -10,7 +10,7 @@
     <link href="../static/css/style.css" type="text/css" rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <th:block th:insert="~{blocks/errorBlock :: error}"></th:block>
+    <th:block th:insert="~{/blocks/errorBlock :: error}"></th:block>
     <div th:switch="${!glassesList.isEmpty()}">
         <div th:case="${true}">
             <form th:action="@{|/${func[0]}|}" method="post">
@@ -18,12 +18,12 @@
                 <input type="text" id="inputId" name="inputId" required maxlength="9"/>
                 <button type="submit" class="btn btn-primary">Ввести</button>
             </form>
-            <th:block th:insert="~{blocks/tableBlock :: table}"></th:block>
+            <th:block th:insert="~{/blocks/tableBlock :: table}"></th:block>
         </div>
         <div th:case="${false}">
             <h2>Записей нет</h2>
         </div>
     </div>
-    <th:block th:insert="~{blocks/footerBlock :: footer}"></th:block>
+    <th:block th:insert="~{/blocks/footerBlock :: footer}"></th:block>
 </body>
 </html>

@@ -9,9 +9,9 @@ psql -h localhost -p 5432 -d rkis -U postgres -W
 CREATE TABLE glasses (
 	id SERIAL PRIMARY KEY,
 	diopters DOUBLE PRECISION NOT NULL,
-    lengthArches DOUBLE PRECISION NOT NULL,
-   	lensColor TEXT NOT NULL,
-    frameColor TEXT NOT NULL,
+    length_arches DOUBLE PRECISION NOT NULL,
+   	lens_color TEXT NOT NULL,
+    frame_color TEXT NOT NULL,
     brand TEXT NOT NULL
 );
 
@@ -27,10 +27,10 @@ CREATE TABLE role (
 );
 INSERT INTO role(name) VALUES ('ROLE_USER'), ('ROLE_ADMIN');
 
-CREATE TABLE gamer_roles (
+CREATE TABLE client_roles (
             user_id int NOT NULL,
             role_id int NOT NULL,
-            CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gamer (id_user),
+            CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES client (id_user),
             CONSTRAINT role_fk FOREIGN KEY (role_id) REFERENCES role (id),
             PRIMARY KEY (user_id, role_id)
 );
@@ -40,4 +40,4 @@ CREATE TABLE gamer_roles (
 mvn clean package
 java -jar target/rkis6-1.0-SNAPSHOT.jar
 Открыть в бразуере localhost:8081
-Чтобы зарегистрировать админа, введите логин в регистрации admin
+Чтобы зарегистрировать админа, введите в регистрации в качестве логина admin и любой пароль

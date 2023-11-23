@@ -10,12 +10,12 @@
     <link href="../static/css/style.css" type="text/css" rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <th:block th:insert="~{blocks/errorBlock :: error}"></th:block>
+    <th:block th:insert="~{/blocks/errorBlock :: error}"></th:block>
     <form th:action="@{/find}" method="post">
         <label for="inputDiopters">Значение диоптрий, больше которого должно быть:</label>
         <input type="text" id="inputDiopters" name="inputDiopters" required maxlength="9"/>
         <button type="submit" class="btn btn-primary">Ввести</button>
     </form>
-    <th:block th:insert="~{blocks/footerBlock :: footer}"></th:block>
+    <th:block th:insert="~{/blocks/footerBlock :: footer}"></th:block>
 </body>
 </html>
